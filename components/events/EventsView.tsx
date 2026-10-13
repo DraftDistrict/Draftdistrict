@@ -14,6 +14,8 @@ import type { EventType } from "@/data/site";
 export function EventsView() {
   const [filter, setFilter] = useState<EventFilter>(eventFilters[0]);
   const featured = events.find((e) => e.featured) ?? events[0];
+  // Hide filters for event types that currently have no events.
+  const filterOptions = eventFilters.filter((f) => f === "ALL" || events.some((e) => e.type === f));
   const shown = events.filter((e) => filter === "ALL" || e.type === (filter as EventType));
 
   return (
@@ -37,7 +39,7 @@ export function EventsView() {
           </Reveal>
 
           <Reveal delay={0.08}>
-            <EventFilters active={filter} onSelect={setFilter} />
+            <EventFilters options={filterOptions} active={filter} onSelect={setFilter} />
           </Reveal>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

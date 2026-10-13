@@ -1,12 +1,20 @@
 import { cn } from "@/lib/utils";
 
-export const eventFilters = ["ALL", "SPORTS", "LIVE MUSIC", "TRIVIA", "SPECIALS", "COMMUNITY"] as const;
+export const eventFilters = ["ALL", "SPORTS", "LIVE MUSIC", "TRIVIA", "SPECIALS"] as const;
 export type EventFilter = (typeof eventFilters)[number];
 
-export function EventFilters({ active, onSelect }: { active: EventFilter; onSelect: (f: EventFilter) => void }) {
+export function EventFilters({
+  options,
+  active,
+  onSelect,
+}: {
+  options: readonly EventFilter[];
+  active: EventFilter;
+  onSelect: (f: EventFilter) => void;
+}) {
   return (
     <div className="no-scrollbar mt-8 flex gap-2 overflow-x-auto" role="group" aria-label="Filter events">
-      {eventFilters.map((f) => (
+      {options.map((f) => (
         <button
           key={f}
           type="button"

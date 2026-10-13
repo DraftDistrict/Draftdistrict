@@ -1,8 +1,10 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import { Phone } from "lucide-react";
 import { Reveal } from "@/components/Motion";
 import { site } from "@/data/site";
 import type { EventItem } from "@/data/site";
+import { cn } from "@/lib/utils";
 
 export function FeaturedEventSection({ event }: { event: EventItem }) {
   return (
@@ -14,16 +16,43 @@ export function FeaturedEventSection({ event }: { event: EventItem }) {
         </p>
       </Reveal>
       <Reveal delay={0.08}>
-        <article className="mt-8 grid overflow-hidden border border-line bg-panel lg:grid-cols-2" data-testid="featured-event">
-          <div className="relative min-h-[280px] overflow-hidden">
-            <Image
-              src={event.image}
-              alt={event.imageAlt}
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-graphite/60 to-transparent lg:bg-gradient-to-r" aria-hidden="true" />
+        <article
+          className={cn(
+            "mt-8 grid overflow-hidden border border-line bg-panel",
+            event.poster ? "sm:grid-cols-[220px_1fr] lg:grid-cols-[300px_1fr]" : "lg:grid-cols-2"
+          )}
+          data-testid="featured-event"
+        >
+          <div
+            className={cn("relative overflow-hidden", event.poster ? "aspect-(--poster-aspect) bg-black sm:aspect-[2/3]" : "min-h-[280px]")}
+            style={
+              event.poster
+                ? ({ "--poster-aspect": event.posterAspect ?? `${event.image.width} / ${event.image.height}` } as CSSProperties)
+                : undefined
+            }
+          >
+            {event.poster ? (
+              // Same framing as the event cards: own shape on phones, 2:3 from sm up.
+              <Image
+                src={event.image}
+                alt={event.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 300px, (min-width: 640px) 220px, 100vw"
+                style={{ objectPosition: event.posterPosition }}
+                className="object-cover"
+              />
+            ) : (
+              <>
+                <Image
+                  src={event.image}
+                  alt={event.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-graphite/60 to-transparent lg:bg-gradient-to-r" aria-hidden="true" />
+              </>
+            )}
             <p className="absolute left-5 top-5 flex items-center gap-2 bg-copper px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
@@ -40,7 +69,7 @@ export function FeaturedEventSection({ event }: { event: EventItem }) {
               </div>
               <div>
                 <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-ember">{event.type}</p>
-                <p className="mt-1 font-mono text-xs text-fog">{event.weekday} · {event.time}</p>
+                <p className="mt-1 font-mono text-xs text-fog">{event.weekday}{event.time && ` · ${event.time}`}</p>
               </div>
             </div>
             <h2 id="featured-event-heading" className="mt-6 font-heading text-3xl font-black uppercase leading-tight tracking-tight text-bone sm:text-4xl">

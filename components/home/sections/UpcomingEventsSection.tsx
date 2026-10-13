@@ -42,7 +42,7 @@ export function UpcomingEventsSection() {
                 {ev.name}
               </h3>
               <p className="mt-1 font-mono text-xs font-medium uppercase tracking-[0.18em] text-fog">
-                {ev.weekday} · {ev.time}
+                {ev.weekday}{ev.time && ` · ${ev.time}`}
               </p>
               <p className="mt-3 flex-1 text-sm leading-relaxed text-fog">{ev.desc}</p>
               <Link
